@@ -8,7 +8,9 @@
 #
 
 import Image, ImageDraw
-
+from skimage.filter import threshold_otsu, threshold_adaptive
+from skimage.util import img_as_ubyte
+import numpy as np
 import sys
 import math, random
 from itertools import product
@@ -131,10 +133,19 @@ def run(img):
  
 def main():
     # Open the image
-    img = Image.open(sys.argv[1])
+    filename=raw_input("Filename: ")
+    img = Image.open(filename)
 
+    #photo = Image.open(filename)
+    #photo = img_as_ubyte(photo)
+    #threshold = threshold_otsu(photo)
+    #img = img.point(lambda p: p > threshold and 255)
+    #print threshold
+    
+    
     # Threshold the image, this implementation is designed to process b+w
     # images only
+
     img = img.point(lambda p: p > 190 and 255)
     img = img.convert('1')
 
@@ -146,7 +157,7 @@ def main():
     #
     # output_image is just a frivolous way to visualize the components.
     (labels, output_img) = run(img)
-
+    output_img=output_img.convert('1')    
     output_img.show()
 
 if __name__ == "__main__": main()
