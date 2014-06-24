@@ -9,7 +9,12 @@ class UFarray:
 
         # Name of the next label, when one is created
         self.label = 0
-
+    def printUF(self):
+        print self.P
+        
+    def length(self):
+        return len(self.P)
+        
     def makeLabel(self):
         r = self.label
         self.label += 1
@@ -47,7 +52,7 @@ class UFarray:
             if root > rootj: root = rootj
             self.setRoot(j, root)
             self.setRoot(i, root)
-    
+        
     def flatten(self):
         for i in range(1, len(self.P)):
             self.P[i] = self.P[self.P[i]]
