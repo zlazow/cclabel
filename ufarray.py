@@ -65,3 +65,22 @@ class UFarray:
             else:
                 self.P[i] = k
                 k += 1
+                
+                
+class Counter:
+    def __init__(self):
+        self.size = 1
+        
+    def addPoint(self):
+        self.size += 1
+    
+    def getSize(self):
+        return self.size
+    
+    def setSize(self, x):
+        self.size = x
+    
+    def union(self, i):
+        self.size += i.getSize()
+        i.setSize(self.size)
+         

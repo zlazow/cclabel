@@ -11,6 +11,7 @@ import Image, ImageDraw
 from skimage.filter import threshold_otsu, threshold_adaptive
 from skimage.util import img_as_ubyte
 import numpy as np
+from numpy import array
 import sys
 import math, random
 from itertools import product
@@ -66,8 +67,7 @@ def run(img):
         #    so simply assign b's label to e
         elif y > 0 and data[x, y-1] == 0:
             labels[x, y] = labels[(x, y-1)]
-            labels[x,y][1]+=1
-            labels[x,y-1][1]+=1
+            labels[x,y][1].addPoint()
  
         # If pixel c is in the image and black:
         #    b is its neighbor, but a and d are not
@@ -76,18 +76,15 @@ def run(img):
  
             c = labels[(x+1, y-1)]
             labels[x, y] = c
-            labels[x,y][1]+=1
-            labels[x+1,y-1][1]+=1
- 
+            labels[x,y][1].addPoint()
+            
             # If pixel a is in the image and black:
             #    Then a and c are connected through e
             #    Therefore, we must union their sets
             if x > 0 and data[x-1, y-1] == 0:
                 a = labels[(x-1, y-1)]
                 uf.union(c[0], a[0])
-                labels[x,y][1]+=labels[x-1,y-1][1]
-                labels[x-1,y-1][1]=labels[x,y][1]
-                
+                labels[x,y][1].union(labels[x-1,y-1][1])                
  
             # If pixel d is in the image and black:
             #    Then d and c are connected through e
@@ -95,76 +92,84 @@ def run(img):
             elif x > 0 and data[x-1, y] == 0:
                 d = labels[(x-1, y)]
                 uf.union(c[0], d[0])
-                labels[x,y][1]+=labels[x-1,y][1]
-                labels[x-1,y][1]=labels[x,y][1]
-
+                labels[x,y][1].union(labels[x-1,y][1]) 
+                  
         # If pixel a is in the image and black:
         #    We already know b and c are white
         #    d is a's neighbor, so they already have the same label
         #    So simply assign a's label to e
         elif x > 0 and y > 0 and data[x-1, y-1] == 0:
             labels[x, y] = labels[(x-1, y-1)]
-            labels[x,y][1]+=1
-            labels[x-1,y-1][1]+=1
+            labels[x,y][1].addPoint()
         # If pixel d is in the image and black
         #    We already know a, b, and c are white
         #    so simpy assign d's label to e
         elif x > 0 and data[x-1, y] == 0:
             labels[x, y] = labels[(x-1, y)]
-            labels[x,y][1]+=1
-            labels[x-1,y][1]+=1
+            labels[x,y][1].addPoint()
         # All the neighboring pixels are white,
         # Therefore the current pixel is a new component
         else: 
-            labels[x, y] = [uf.makeLabel(), 1]
+            labels[x, y] = [uf.makeLabel(), Counter()]
  
     
     #
     # Get rid of small regions
-    #
+    # Doesn't delete every key... That i think is the issue
     
+
     
     uf.flatten()
+    
+
+        
+    
     colors = {}
 
     # Image to display the components in a nice, colorful way
     output_img = Image.new("RGB", (width, height))
     outdata = output_img.load()
+    
+        
+    
 
-    for (x, y) in labels:
- 
+
+    for (coords) in labels.keys():
+        check=False
         # Name of the component the current point belongs to
-        component = uf.find(labels[(x, y)][0])
+        component = uf.find(labels[coords][0])
+        size = labels[coords][1].getSize()
+        if size<=15: #and size>=2000
+            check=True
 
         # Update the labels with correct information
-        labels[(x, y)][0] = component
+        labels[coords][0] = component
  
         # Associate a random color with this component 
         if component not in colors: 
-            colors[component] = (random.randint(0,255), random.randint(0,255),random.randint(0,255))
-
+            if check==True:
+                colors[component]=(0,0,0)
+            else:    
+                colors[component] = (random.randint(0,255), random.randint(0,255),random.randint(0,255))
+            #colors[component] = (255,0,0)         
         # Colorize the image
-        outdata[x, y] = colors[component]
+        outdata[coords] = colors[component]   
+
 
     return (labels, output_img)
  
 def main():
     # Open the image
     filename=raw_input("Filename: ")
-    img = Image.open(filename)
-    
-    #(image, block_size, method='gaussian', offset=0, mode='reflect', param=None)
-    #img = threshold_adaptive(photo, 50, method='gaussian', offset=-2)
-    #plt.imshow(img, interpolation='nearest')
-    #plt.show()
-    
+    img = Image.open(filename)    
     
     # Threshold the image, this implementation is designed to process b+w
     # images only
     
     #use 201 for .tif // use 190 for .png copies
-    img = img.point(lambda p: p < 201 and 255) 
+    img = img.point(lambda p: (p < 144 or p>200) and 255) 
     img.show()
+    #img.save("BW.png")
     #img = img.convert('1')
 
     # labels is a dictionary of the connected component data in the form:
@@ -177,7 +182,7 @@ def main():
     (labels, output_img) = run(img)
     #output_img = output_img.convert("1")
     output_img.show()
-    filename = "AdaptiveThreshold_"+filename+".png"
+    filename = "SizeThreshold_"+filename
     output_img.save(filename)
 
 if __name__ == "__main__": main()
