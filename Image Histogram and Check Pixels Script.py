@@ -16,10 +16,20 @@ n, bins, patches = plt.hist(arr, 50, normed=1, facecolor='green', alpha=0.75)
 plt.xlabel('Pixel Value')
 plt.ylabel('Frequency')
 plt.title("NDVI")
-plt.axis([10, 255, 0, .4])
+plt.axis([80, 160, 0, .06])
 plt.grid(True)
 
 plt.show()
+#count = 0.0
+#size = arr.shape[0] * arr.shape[1]
+#for y in range(arr.shape[1]):
+#    for x in range(arr.shape[0]):
+#        if np.all(arr[x,y]):
+#            count +=1
+#
+#print count/size
+#print count
+#print size 
 
 
 

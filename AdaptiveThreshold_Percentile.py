@@ -27,7 +27,7 @@ height,width = arr.shape
 #ycount = 0
 
 #1) create blocks
-blocks=10
+blocks=height*width/1000
 xblock=width/blocks
 yblock=height/blocks
 
@@ -43,7 +43,7 @@ for y in range(blocks):
             slic = arr[x*xblock:x*xblock+xblock, y*yblock:y*yblock+yblock]
             
         #2) create histogram-like thing and find 75th-percentile
-        val = np.percentile(slic,85)
+        val = np.percentile(slic,80)
         
             
         #3) Binarize the image

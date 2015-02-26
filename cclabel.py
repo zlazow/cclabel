@@ -139,7 +139,7 @@ def run(img):
         # Name of the component the current point belongs to
         component = uf.find(labels[coords][0])
         size = labels[coords][1].getSize()
-        if size<=15: #and size>=2000
+        if size<=25: #and size>=2000
             check=True
 
         # Update the labels with correct information
@@ -167,8 +167,8 @@ def main():
     # images only
     
     #use 201 for .tif // use 190 for .png copies
-    img = img.point(lambda p: (p < 144 or p>200) and 255) 
-    img.show()
+    #img = img.point(lambda p: (p < 144 or p>200) and 255) 
+    #img.show()
     #img.save("BW.png")
     #img = img.convert('1')
 

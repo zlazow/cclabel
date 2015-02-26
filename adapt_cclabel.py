@@ -18,9 +18,11 @@ from itertools import product
 from ufarray import *
 from matplotlib import pyplot as plt
 import copy
+import os.path
 
 labels={}
 uf = UFarray()
+
 
 def adapt(arr,blocks):
     
@@ -32,9 +34,11 @@ def adapt(arr,blocks):
         #   | 2 |   |   | rem...
         #   -----------------
     #1) create blocks
-    blocks=10 #how axis lines that will separate the iamge
+    height,width=arr.shape
+    #blocks=10 #how axis lines that will separate the iamge
     xblock=width/blocks
     yblock=height/blocks
+    glob_val = np.percentile(arr,92)
     
     for y in range(blocks):
         for x in range(blocks):
@@ -56,7 +60,11 @@ def adapt(arr,blocks):
                 slic = arr[x*xblock:x*xblock+xblock, y*yblock:y*yblock+yblock]
                 
             #2) create histogram-like thing and find specific percentile
-            val = np.percentile(slic,85)
+            
+            if x == 0 or x == blocks or y ==0 or y==blocks:
+                val = glob_val
+            else: 
+                val = np.percentile(slic,90)
             
                 
             #3) Binarize the image
@@ -214,11 +222,12 @@ def main():
     # Open the image
     filename=raw_input("Filename: ")
     img = Image.open(filename)
-    arr = array(img)    
+    arr = array(img)
     
     # Threshold the image, this implementation is designed to process b+w
     # images only
-    img = adapt(arr, 10)
+    print arr.shape
+    img = adapt(arr, 3)
     
     # This is for a global thresholding value
     #use 201 for .tif // use 190 for .png copies
@@ -236,7 +245,7 @@ def main():
     (labels, output_img) = run(img)
     #output_img = output_img.convert("1")
     output_img.show()
-    filename = "SizeThreshold_"+filename
+    filename = "Fig_AdaptFig_NDVIImage_34_orthoQB02_11JUL040015472-M1BS-101001000DB70900_u16ns3413.tif"+filename
     output_img.save(filename)
 
 if __name__ == "__main__": main()
