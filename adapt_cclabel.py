@@ -218,34 +218,34 @@ def run(img):
 
     return (labels, output_img)
  
-def main():
-    # Open the image
-    filename=raw_input("Filename: ")
-    img = Image.open(filename)
-    arr = array(img)
-    
-    # Threshold the image, this implementation is designed to process b+w
-    # images only
-    print arr.shape
-    img = adapt(arr, 3)
-    
-    # This is for a global thresholding value
-    #use 201 for .tif // use 190 for .png copies
-    #img = img.point(lambda p: (p < 144 or p>200) and 255) 
-    #img.show()
-    #img.save("BW.png")
+#def main():
+# Open the image
+filename=raw_input("Filename: ")
+img = Image.open(filename)
+arr = array(img)
 
-    # labels is a dictionary of the connected component data in the form:
-    #     (x_coordinate, y_coordinate) : component_id
-    #
-    # if you plan on processing the component data, this is probably what you
-    # will want to use
-    #
-    # output_image is just a frivolous way to visualize the components.
-    (labels, output_img) = run(img)
-    #output_img = output_img.convert("1")
-    output_img.show()
-    filename = "Fig_AdaptFig_NDVIImage_34_orthoQB02_11JUL040015472-M1BS-101001000DB70900_u16ns3413.tif"+filename
-    output_img.save(filename)
+# Threshold the image, this implementation is designed to process b+w
+# images only
+print arr.shape
+img = adapt(arr, 4)
 
-if __name__ == "__main__": main()
+# This is for a global thresholding value
+#use 201 for .tif // use 190 for .png copies
+#img = img.point(lambda p: (p < 144 or p>200) and 255) 
+#img.show()
+#img.save("BW.png")
+
+# labels is a dictionary of the connected component data in the form:
+#     (x_coordinate, y_coordinate) : component_id
+#
+# if you plan on processing the component data, this is probably what you
+# will want to use
+#
+# output_image is just a frivolous way to visualize the components.
+(labels, output_img) = run(img)
+#output_img = output_img.convert("1")
+output_img.show()
+filename = "AdaptFig_"+filename
+output_img.save(filename)
+
+#if __name__ == "__main__": main()

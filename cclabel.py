@@ -158,31 +158,31 @@ def run(img):
 
     return (labels, output_img)
  
-def main():
-    # Open the image
-    filename=raw_input("Filename: ")
-    img = Image.open(filename)    
-    
-    # Threshold the image, this implementation is designed to process b+w
-    # images only
-    
-    #use 201 for .tif // use 190 for .png copies
-    #img = img.point(lambda p: (p < 144 or p>200) and 255) 
-    #img.show()
-    #img.save("BW.png")
-    #img = img.convert('1')
+#def main():
+# Open the image
+filename=raw_input("Filename: ")
+img = Image.open(filename)    
 
-    # labels is a dictionary of the connected component data in the form:
-    #     (x_coordinate, y_coordinate) : component_id
-    #
-    # if you plan on processing the component data, this is probably what you
-    # will want to use
-    #
-    # output_image is just a frivolous way to visualize the components.
-    (labels, output_img) = run(img)
-    #output_img = output_img.convert("1")
-    output_img.show()
-    filename = "SizeThreshold_"+filename
-    output_img.save(filename)
+# Threshold the image, this implementation is designed to process b+w
+# images only
 
-if __name__ == "__main__": main()
+#use 201 for .tif // use 190 for .png copies
+#img = img.point(lambda p: (p < 144 or p>200) and 255) 
+#img.show()
+#img.save("BW.png")
+#img = img.convert('1')
+
+# labels is a dictionary of the connected component data in the form:
+#     (x_coordinate, y_coordinate) : component_id
+#
+# if you plan on processing the component data, this is probably what you
+# will want to use
+#
+# output_image is just a frivolous way to visualize the components.
+(labels, output_img) = run(img)
+#output_img = output_img.convert("1")
+output_img.show()
+filename = "cclabel_"+filename
+output_img.save(filename)
+
+#if __name__ == "__main__": main()
